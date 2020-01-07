@@ -20,12 +20,17 @@ EMPLOYEES = 4 # This is number of employees per location, not total
 # parsing/handling commandline options
 auto_create = False
 create_db = False
+# Note: By default, each time you run this script, it cleans the tables out
+# If you want to add more data instead of starting fresh, you can pass the flag '-c'
+# and it won't clean out the database, but will just add more random values to it
 clean_table = True
 fullCmdArguments = sys.argv
 argumentList = fullCmdArguments[1:]
 unixOptions = "hu:p:d:l:e:ac"
 gnuOptions = ["help", "user=", "passwd=", "dbname=", "locations=", "employees=", "auto", "dontclean"]
 
+# probably don't NEED to do all this try/catch, but makes it easier to catch what/where goes wrong sometimes
+# this chunk is just handling arguments
 try:
     arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
 except getopt.error as err:
@@ -52,8 +57,7 @@ for currentArgument, currentValue in arguments:
     elif currentArgument in ("-c", "--dontclean"):
         clean_table = False
 
-# Make sure that we have all the pieces we must have in order to connect properly
-
+# Make sure that we have all the pieces we must have in order to connect to our db properly
 if not DB_USER:
     print ("You have to specify a database user either by environment variable or pass one in with the -u flag.")
     sys.exit(2)
@@ -76,12 +80,11 @@ except Error as e:
 
 mycursor = mydb.cursor()
 
-# This is what randomly generates our stuff
+# This is what randomly generates our employee-like data
 fake = Faker()
 
 # Attempt to switch to our specified database
 # If it doesn't exist, then go through a flow to create it
-
 try:
     mycursor.execute("USE {}".format(DB_NAME))
 except Error as e:
@@ -189,5 +192,6 @@ def generate_locations():
 
     mydb.commit()
 
+# aaaaaand go!
 generate_locations()
 create_employees()
