@@ -1,0 +1,2 @@
+mysql-connector==2.2.9
+Faker==3.0.0
