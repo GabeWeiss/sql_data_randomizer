@@ -8,10 +8,12 @@ import mysql.connector
 from mysql.connector import Error
 from mysql.connector import errorcode
 
-# from config import DB_USER, DB_PASS and DB_NAME
-DB_USER = os.environ.get("DB_USER", None)
-DB_PASS = os.environ.get("DB_PASS", None)
-DB_NAME = os.environ.get("DB_NAME", None)
+# from config import SQL instance connection info, and 
+# our database information to connect to the db
+SQL_HOST = os.environ.get("SQL_HOST", "127.0.0.1") # Defaults to using localhost/Cloud SQL Proxy
+DB_USER  = os.environ.get("DB_USER", None)
+DB_PASS  = os.environ.get("DB_PASS", None)
+DB_NAME  = os.environ.get("DB_NAME", None)
 
 # configurable defaults for how many variations you want
 LOCATIONS = 8
@@ -26,8 +28,8 @@ create_db = False
 clean_table = True
 fullCmdArguments = sys.argv
 argumentList = fullCmdArguments[1:]
-unixOptions = "hu:p:d:l:e:ac"
-gnuOptions = ["help", "user=", "passwd=", "dbname=", "locations=", "employees=", "auto", "dontclean"]
+unixOptions = "hH:u:p:d:l:e:ac"
+gnuOptions = ["help", "host=", "user=", "passwd=", "dbname=", "locations=", "employees=", "auto", "dontclean"]
 
 # probably don't NEED to do all this try/catch, but makes it easier to catch what/where goes wrong sometimes
 # this chunk is just handling arguments
@@ -42,7 +44,9 @@ for currentArgument, currentValue in arguments:
         print ("\nusage: python mysql_faker.py [-h | -u user | -p passwd | -d dbname | -l locations | -e employees]\nOptions and arguments (and corresponding environment variables):\n-d db\t: database name to connect to or create if it doesn't exist\n-e emps\t: number of employees per location to create\n-h\t: display this help\n-l locs\t: number of locations to create\n-p pwd\t: password for the database user\n-u usr\t: database user to connect with\n-a\t: automatically create the database if it's missing\n-c\t: DON'T clean out the tables before inserting new random data. Default is to start clean\n\nOther environment variables:\nDB_USER\t: database user to connect with. Overridden by the -u flag\nDB_PASS\t: database password. Overridden by the -p flag.\nDB_NAME\t: database to connect to. Overridden by the -d flag.\n")
         sys.exit(0)
 
-    if currentArgument in ("-u", "--user"):
+    if currentArgument in ("-H", "--host"):
+        SQL_HOST = currentValue
+    elif currentArgument in ("-u", "--user"):
         DB_USER = currentValue
     elif currentArgument in ("-p", "--passwd"):
         DB_PASS = currentValue
@@ -70,7 +74,7 @@ if not DB_NAME:
 
 try:
     mydb = mysql.connector.connect(
-        host="127.0.0.1", # This is because we use the proxy
+        host=SQL_HOST,
         user=DB_USER,
         passwd=DB_PASS
     )
