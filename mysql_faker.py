@@ -15,7 +15,7 @@ DB_NAME = os.environ.get("DB_NAME", None)
 
 # configurable defaults for how many variations you want
 LOCATIONS = 8
-EMPLOYEES = 4 # This is number of employees per location, not total
+EMPLOYEES = 8 # This is number of employees per location, not total
 
 # parsing/handling commandline options
 auto_create = False
