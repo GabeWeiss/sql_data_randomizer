@@ -21,5 +21,6 @@ ENV DB_NAME "<db name>"
 # Uncomment SQL_HOST line and specify the IP to connect to
 ENV SQL_HOST "<database IP>"
 
-CMD [ "python", "mysql_faker.py" ]
+# passing the --auto flag to remove interactivity from the script
+CMD [ "python", "mysql_faker.py", "--auto" ]
 
