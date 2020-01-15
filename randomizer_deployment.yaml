@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: randomizer
+  labels:
+    app: randomizer
+spec:
+  template:
+    metadata:
+      labels:
+        app: randomizer
+    spec:
+      # This section describes the containers that make up the deployment
+      containers:
+        - name: randomizer
+          # CHANGE [PROJECT_ID] to the project where your Cloud SQL instance lives
+          image: gcr.io/[PROJECT_ID]/randomizer
+          # Set env variables used for database connection
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: dbname
+        # Change <INSTANCE_CONNECTION_NAME> here to include your GCP
+        # project, the region of your Cloud SQL instance and the name
+        # of your Cloud SQL instance. The format is $PROJECT:$REGION:$INSTANCE
+        # Note too, that the tcp port will be different if you're not doing
+        # MySQL. If you're using Postgres for example, it should be 5432
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy",
+                    "-instances=<INSTANCE_CONNECTION_NAME>=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/sql_credentials.json"]
+          volumeMounts:
+            - name: my-secrets-volume
+              mountPath: /secrets/cloudsql
+              readOnly: true
+      volumes:
+        - name: my-secrets-volume
+          secret:
+            secretName: cloudsql-instance-credentials
