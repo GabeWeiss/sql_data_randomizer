@@ -153,22 +153,22 @@ def create_employees():
                 print("There was a problem dropping the existing employee table.")
                 sys.exit(2)
 
-    employee_config = """
-        CREATE TABLE employee (
-        emp_id INT NOT NULL AUTO_INCREMENT,
-        first_name VARCHAR(40),
-        last_name VARCHAR(40),
-        title VARCHAR(80),
-        office_id INT,
-        pwd CHAR(15),
-        ipaddr CHAR(15),
-        ssn CHAR(11),
-        PRIMARY KEY (emp_id))"""
-    try:
-        mycursor.execute(employee_config)
-    except Error as e:
-        print(e)
-        sys.exit(2)
+        employee_config = """
+            CREATE TABLE employee (
+            emp_id INT NOT NULL AUTO_INCREMENT,
+            first_name VARCHAR(40),
+            last_name VARCHAR(40),
+            title VARCHAR(80),
+            office_id INT,
+            pwd CHAR(15),
+            ipaddr CHAR(15),
+            ssn CHAR(11),
+            PRIMARY KEY (emp_id))"""
+        try:
+            mycursor.execute(employee_config)
+        except Error as e:
+            print(e)
+            sys.exit(2)
 
     for office_id in range(1, LOCATIONS + 1):
         # generate some random employees for each office location
@@ -203,14 +203,14 @@ def generate_locations():
                 print("There was a problem dropping the existing location table.")
                 sys.exit(2)
 
-    location_config = """
-        CREATE TABLE location (
-        office_id INT NOT NULL AUTO_INCREMENT,
-        address VARCHAR(80),
-        city VARCHAR(40),
-        state CHAR(2),
-        PRIMARY KEY (office_id))"""
-    mycursor.execute(location_config)
+        location_config = """
+            CREATE TABLE location (
+            office_id INT NOT NULL AUTO_INCREMENT,
+            address VARCHAR(80),
+            city VARCHAR(40),
+            state CHAR(2),
+            PRIMARY KEY (office_id))"""
+        mycursor.execute(location_config)
 
     for _ in range(LOCATIONS):
         address = fake.street_address()
