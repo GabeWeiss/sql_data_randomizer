@@ -9,9 +9,9 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-ENV DB_USER "<user>"
-ENV DB_PASS "<password>"
-ENV DB_NAME "<db name>"
+#ENV DB_USER "<user>"
+#ENV DB_PASS "<password>"
+#ENV DB_NAME "<db name>"
 
 # Note that SQL_HOST is not needed IF you're connecting to
 # a localhost db or Cloud SQL Proxy AND you're not using Docker on MacOS

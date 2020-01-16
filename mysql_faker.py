@@ -82,7 +82,7 @@ wait_amount = 1
 # second increments before expanding the backoff time exponentially
 # Once the wait time passes a minute, we'll give up and exit with an error
 backoff_count = 5
-def connectDatabase():
+def connect_database():
     global attempt_num
     global wait_amount
     global mydb
@@ -92,7 +92,6 @@ def connectDatabase():
             user=DB_USER,
             passwd=DB_PASS
         )
-        return True
     except Error as e:
         attempt_num = attempt_num + 1
         if attempt_num >= backoff_count:
@@ -103,10 +102,9 @@ def connectDatabase():
         if wait_amount > 60:
             print ("Giving up on connecting to the database")
             sys.exit(2)
-        return False
 
 while mydb == None:
-    connectDatabase()
+    connect_database()
 
 print("Connected to database successfully")
 
@@ -144,6 +142,28 @@ except Error as e:
         sys.exit(2)
 
 # Create our employee table
+def create_employee_table():
+    employee_config = """
+        CREATE TABLE employee (
+        emp_id INT NOT NULL AUTO_INCREMENT,
+        first_name VARCHAR(40),
+        last_name VARCHAR(40),
+        title VARCHAR(80),
+        office_id INT,
+        pwd CHAR(15),
+        ipaddr CHAR(15),
+        ssn CHAR(11),
+        PRIMARY KEY (emp_id))"""
+    try:
+        mycursor.execute(employee_config)
+    except Error as e:
+        if e.errno != errorcode.ER_TABLE_EXISTS_ERROR:
+            print(e)
+            print(e.errno)
+            sys.exit(2)
+
+
+# Fill employee table with data
 def create_employees():
     if clean_table:
         try:
@@ -153,22 +173,7 @@ def create_employees():
                 print("There was a problem dropping the existing employee table.")
                 sys.exit(2)
 
-        employee_config = """
-            CREATE TABLE employee (
-            emp_id INT NOT NULL AUTO_INCREMENT,
-            first_name VARCHAR(40),
-            last_name VARCHAR(40),
-            title VARCHAR(80),
-            office_id INT,
-            pwd CHAR(15),
-            ipaddr CHAR(15),
-            ssn CHAR(11),
-            PRIMARY KEY (emp_id))"""
-        try:
-            mycursor.execute(employee_config)
-        except Error as e:
-            print(e)
-            sys.exit(2)
+    create_employee_table()
 
     for office_id in range(1, LOCATIONS + 1):
         # generate some random employees for each office location
@@ -194,6 +199,24 @@ def create_employees():
         mydb.commit()
 
 # Create location table
+def create_location_table():
+    location_config = """
+        CREATE TABLE location (
+        office_id INT NOT NULL AUTO_INCREMENT,
+        address VARCHAR(80),
+        city VARCHAR(40),
+        state CHAR(2),
+        PRIMARY KEY (office_id))"""
+    try:
+        mycursor.execute(location_config)
+    except Error as e:
+        if e.errno != errorcode.ER_TABLE_EXISTS_ERROR:
+            print(e)
+            print(e.errno)
+            sys.exit(2)
+
+
+# Fill location table with data
 def generate_locations():
     if clean_table:
         try:
@@ -203,14 +226,7 @@ def generate_locations():
                 print("There was a problem dropping the existing location table.")
                 sys.exit(2)
 
-        location_config = """
-            CREATE TABLE location (
-            office_id INT NOT NULL AUTO_INCREMENT,
-            address VARCHAR(80),
-            city VARCHAR(40),
-            state CHAR(2),
-            PRIMARY KEY (office_id))"""
-        mycursor.execute(location_config)
+    create_location_table()
 
     for _ in range(LOCATIONS):
         address = fake.street_address()
