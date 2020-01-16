@@ -22,6 +22,7 @@ EMPLOYEES = 8 # This is number of employees per location, not total
 # parsing/handling commandline options
 auto_create = False
 create_db = False
+
 # Note: By default, each time you run this script, it cleans the tables out
 # If you want to add more data instead of starting fresh, you can pass the flag '-c'
 # and it won't clean out the database, but will just add more random values to it
@@ -72,15 +73,42 @@ if not DB_NAME:
     print ("You have to specify a database name either by environment variable or pass one in with the -d flag.")
     sys.exit(2)
 
-try:
-    mydb = mysql.connector.connect(
-        host=SQL_HOST,
-        user=DB_USER,
-        passwd=DB_PASS
-    )
-except Error as e:
-    print ("Couldn't connect to the MySQL instance.")
-    sys.exit(2)
+
+# Wait for our database connection
+mydb = None
+attempt_num = 0
+wait_amount = 1
+# backoff_count is the static count for how many times we should try at one
+# second increments before expanding the backoff time exponentially
+# Once the wait time passes a minute, we'll give up and exit with an error
+backoff_count = 5
+def connectDatabase():
+    global attempt_num
+    global wait_amount
+    global mydb
+    try:
+        mydb = mysql.connector.connect(
+            host=SQL_HOST,
+            user=DB_USER,
+            passwd=DB_PASS
+        )
+        return True
+    except Error as e:
+        attempt_num = attempt_num + 1
+        if attempt_num >= backoff_count:
+            wait_amount = wait_amount * 2
+        print ("Couldn't connect to the MySQL instance, trying again in {} second(s).".format(wait_amount))
+        print (e)
+        time.sleep(wait_amount)
+        if wait_amount > 60:
+            print ("Giving up on connecting to the database")
+            sys.exit(2)
+        return False
+
+while mydb == None:
+    connectDatabase()
+
+print("Connected to database successfully")
 
 mycursor = mydb.cursor()
 
@@ -197,5 +225,8 @@ def generate_locations():
     mydb.commit()
 
 # aaaaaand go!
+print("Beginning data creation of {} locations".format(LOCATIONS))
 generate_locations()
+print("Finished creating locations and beginning to create employee records")
 create_employees()
+print("Finished creating employee records")
