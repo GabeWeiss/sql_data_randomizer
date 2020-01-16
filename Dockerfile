@@ -22,5 +22,5 @@ ENV DB_NAME "<db name>"
 ENV SQL_HOST "<database IP>"
 
 # passing the --auto flag to remove interactivity from the script
-CMD [ "python", "mysql_faker.py", "--auto" ]
+CMD [ "python", "mysql_faker.py", "--auto", "-l 10", "-e 100", "-c" ]
 
