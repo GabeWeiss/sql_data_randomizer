@@ -10,6 +10,7 @@ Can run *-h* for full usage/options.
 Dockerfile and deployment yaml files also handy to run this in a container if you want to scale it up with Kubernetes.
 
 Blog posts breaking things down:
+
 Script: https://medium.com/@GabeWeiss/creating-sample-data-for-mysql-databases-38e3eff4a91b
 
 Containerization basics: https://medium.com/@GabeWeiss/breaking-down-containers-9b0eb94cc0cd (not quite live yet, soon)
