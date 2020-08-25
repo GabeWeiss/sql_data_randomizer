@@ -11,6 +11,7 @@ from mysql.connector import errorcode
 # from config import SQL instance connection info, and 
 # our database information to connect to the db
 SQL_HOST = os.environ.get("SQL_HOST", "127.0.0.1") # Defaults to using localhost/Cloud SQL Proxy
+DB_PORT  = os.environ.get("DB_PORT", 3306)
 DB_USER  = os.environ.get("DB_USER", None)
 DB_PASS  = os.environ.get("DB_PASS", None)
 DB_NAME  = os.environ.get("DB_NAME", None)
@@ -29,8 +30,8 @@ create_db = False
 clean_table = True
 fullCmdArguments = sys.argv
 argumentList = fullCmdArguments[1:]
-unixOptions = "hH:u:p:d:l:e:ac"
-gnuOptions = ["help", "host=", "user=", "passwd=", "dbname=", "locations=", "employees=", "auto", "dontclean"]
+unixOptions = "hH:P:u:p:d:l:e:ac"
+gnuOptions = ["help", "host=", "port=", "user=", "passwd=", "dbname=", "locations=", "employees=", "auto", "dontclean"]
 
 # probably don't NEED to do all this try/catch, but makes it easier to catch what/where goes wrong sometimes
 # this chunk is just handling arguments
@@ -42,11 +43,13 @@ except getopt.error as err:
 
 for currentArgument, currentValue in arguments:
     if currentArgument in ("-h", "--help"):
-        print ("\nusage: python mysql_faker.py [-h | -u user | -p passwd | -d dbname | -l locations | -e employees]\nOptions and arguments (and corresponding environment variables):\n-d db\t: database name to connect to or create if it doesn't exist\n-e emps\t: number of employees per location to create\n-h\t: display this help\n-H addr\t: target MySQL database address. Defaults to 127.0.0.1\n-l locs\t: number of locations to create\n-p pwd\t: password for the database user\n-u usr\t: database user to connect with\n-a\t: automatically create the database if it's missing\n-c\t: DON'T clean out the tables before inserting new random data. Default is to start clean\n\nOther environment variables:\nDB_USER\t: database user to connect with. Overridden by the -u flag\nDB_PASS\t: database password. Overridden by the -p flag.\nDB_NAME\t: database to connect to. Overridden by the -d flag.\nSQL_HOST: Remote MySQL database address. Overridden by the -H flag.\n")
+        print ("\nusage: python mysql_faker.py [-h | -P port | -u user | -p passwd | -d dbname | -l locations | -e employees]\nOptions and arguments (and corresponding environment variables):\n-d db\t: database name to connect to or create if it doesn't exist\n-e emps\t: number of employees per location to create\n-h\t: display this help\n-H addr\t: target MySQL database address. Defaults to 127.0.0.1\n-l locs\t: number of locations to create\n-P port\t: port to connect to\n-p pwd\t: password for the database user\n-u usr\t: database user to connect with\n-a\t: automatically create the database if it's missing\n-c\t: DON'T clean out the tables before inserting new random data. Default is to start clean\n\nOther environment variables:\nDB_USER\t: database user to connect with. Overridden by the -u flag\nDB_PASS\t: database password. Overridden by the -p flag.\nDB_NAME\t: database to connect to. Overridden by the -d flag.\nSQL_HOST: Remote MySQL database address. Overridden by the -H flag.\nDB_PORT\t: port for MySQL instance. Overridden by the -P flag.")
         sys.exit(0)
 
     if currentArgument in ("-H", "--host"):
         SQL_HOST = currentValue
+    elif currentArgument in ("-P", "--port"):
+        DB_PORT = currentValue
     elif currentArgument in ("-u", "--user"):
         DB_USER = currentValue
     elif currentArgument in ("-p", "--passwd"):
@@ -72,6 +75,9 @@ if not DB_PASS:
 if not DB_NAME:
     print ("You have to specify a database name either by environment variable or pass one in with the -d flag.")
     sys.exit(2)
+if not DB_PORT:
+    print ("You have to specify a database port either by environment variable or pass one in with the -P flag.")
+    sys.exit(2)
 
 
 # Wait for our database connection
@@ -90,7 +96,8 @@ def connect_database():
         mydb = mysql.connector.connect(
             host=SQL_HOST,
             user=DB_USER,
-            passwd=DB_PASS
+            passwd=DB_PASS,
+            port=DB_PORT
         )
     except Error as e:
         attempt_num = attempt_num + 1
