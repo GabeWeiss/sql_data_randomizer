@@ -1,2 +1,8 @@
+Faker==6.5.2
+mysql==0.0.2
 mysql-connector==2.2.9
-Faker==3.0.0
+mysqlclient==2.0.3
+psycopg2-binary==2.8.6
+python-dateutil==2.8.1
+six==1.15.0
+text-unidecode==1.3
