@@ -184,7 +184,7 @@ def create_employees():
             # Job titles have a lot of whacky things that come through, so be sure we're cleaning
             # our input a bit. If there's a slash, get rid of it, and if it has an apostrophe, we
             # need to escape it so it doesn't munge our SQL
-            jobtitle = fake.job().split("/")[0].replace("'", "\\'")
+            jobtitle = fake.job().split("/")[0].replace("'", "''")
             pwd = fake.password()
             ipaddr = fake.ipv4()
             ssn = fake.ssn()
