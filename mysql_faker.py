@@ -30,9 +30,19 @@ DB_PASS  = os.environ.get("DB_PASS", args.password)
 DB_NAME  = os.environ.get("DB_NAME", args.dbname)
 
 # configurable defaults for how many variations you want
-LOCATIONS = args.locations
+LOCATIONS = 0
+try:
+    LOCATIONS = int(args.locations)
+except:
+    print("Locations count must be an integer.")
+    sys.exit(1)
 # This is number of employees per location, not total
-EMPLOYEES = args.employees
+EMPLOYEES = 0
+try:
+    EMPLOYEES = int(args.employees)
+except:
+    print("Employee count must be an integer.")
+    sys.exit(1)
 
 # parsing/handling commandline options
 auto_create = False
@@ -190,6 +200,7 @@ def create_employees():
 
             if args.continuous:
                 time.sleep(0.5)
+                print(f". {first_name} {last_name}")
 
         mydb.commit()
 
