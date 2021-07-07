@@ -7,8 +7,9 @@ import re
 import sys
 import time
 
-parser = argparse.ArgumentParser(description='This is a script that determines if a set of cameras in Eve Echoes is displaying a safe path or not.')
-parser.add_argument("-H", "--host", help="Specify a host destination for the PostgreSQL instance. Defaults to localhost.", default="127.0.0.1")
+parser = argparse.ArgumentParser(description='This script creates a simulated office employee data set in a PostgreSQL database.', add_help=False)
+parser.add_argument("--help", action="help", help="Show this help message and exit.")
+parser.add_argument("-h", "--host", help="Specify a host destination for the PostgreSQL instance. Defaults to localhost.", default="127.0.0.1")
 parser.add_argument("-P", "--port", help="Specify a port for the PostgreSQL connection. Defaults to 5432.", default=5432)
 parser.add_argument("-u", "--user", help="Specify a database user.")
 parser.add_argument("-p", "--password", help="Specify the db user's password.")
