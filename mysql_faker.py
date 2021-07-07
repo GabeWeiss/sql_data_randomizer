@@ -13,7 +13,7 @@ parser.add_argument("-h", "--host", help="Specify a host destination for the Pos
 parser.add_argument("-P", "--port", help="Specify a port for the PostgreSQL connection. Defaults to 3306.", default=3306)
 parser.add_argument("-u", "--user", help="Specify a database user.")
 parser.add_argument("-p", "--password", help="Specify the db user's password.")
-parser.add_argument("-d", "--dbname", help="Specify a database name to use in your PostgreSQL instance.")
+parser.add_argument("-D", "--dbname", help="Specify a database name to use in your PostgreSQL instance.")
 parser.add_argument("-l", "--locations", help="Specify number of locations for the fake employee data.", default=8)
 parser.add_argument("-e", "--employees", help="Specify number of employees per location for the fake employee data.", default=8)
 parser.add_argument("-a", "--auto", help="If the specified database name doesn't exist, passing this flag tells script to automatically create it.", action='store_true')
