@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: randomizer
   labels:
     app: randomizer
 spec:
+  selector:
+    matchLabels:
+      app: randomizer
   template:
     metadata:
       labels:
