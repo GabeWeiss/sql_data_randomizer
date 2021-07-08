@@ -110,7 +110,8 @@ def connect_database():
                         host=SQL_HOST,
                         user=DB_USER,
                         password=DB_PASS,
-                        port=DB_PORT
+                        port=DB_PORT,
+                        database="postgres"
                     )
                     mydb.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
                     cur = mydb.cursor()
