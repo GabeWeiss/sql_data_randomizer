@@ -41,7 +41,7 @@ spec:
         # Note too, that the tcp port will be different if you're not doing
         # MySQL. If you're using Postgres for example, it should be 5432
         - name: cloudsql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.16
+          image: gcr.io/cloudsql-docker/gce-proxy:1.23
           command: ["/cloud_sql_proxy",
                     "-instances=<INSTANCE_CONNECTION_NAME>=tcp:3306",
                     "-credential_file=/secrets/cloudsql/sql_credentials.json"]
