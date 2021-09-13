@@ -9,6 +9,7 @@ from mysql.connector import Error
 from mysql.connector import errorcode
 
 parser = argparse.ArgumentParser(description='This script creates a simulated office employee data set in a MySQL database.', add_help=False)
+parser.add_argument("--help", action="help", help="Show this help message and exit.")
 parser.add_argument("-h", "--host", help="Specify a host destination for the PostgreSQL instance. Defaults to localhost.", default="127.0.0.1")
 parser.add_argument("-P", "--port", help="Specify a port for the PostgreSQL connection. Defaults to 3306.", default=3306)
 parser.add_argument("-u", "--user", help="Specify a database user.")
