@@ -1,6 +1,6 @@
 FROM python:3
 
-LABEL maintainer="Gabe Weiss"
+LABEL maintainer="[MAINTAINER_NAME]"
 
 COPY ./requirements.txt /app/
 COPY ./mysql_faker.py /app/
